@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suraksha HTML Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Suraksha HTML Demo Branch</p>
+          <h1>Parametric income protection for gig workers, in one static demo.</h1>
+          <p class="hero-text">
+            This branch keeps a browser-openable HTML showcase for Suraksha while
+            the full React and Express app stays on <code>main</code>.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#demo-panel">Open Demo Panel</a>
+            <span class="hint">Open this file directly in a browser. No install needed.</span>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <p class="eyebrow">What It Shows</p>
+          <div class="chip-row">
+            <span class="chip">Registration</span>
+            <span class="chip">Dynamic Premium</span>
+            <span class="chip">Automated Triggers</span>
+            <span class="chip">Claims</span>
+          </div>
+          <dl class="stat-grid">
+            <div>
+              <dt>5</dt>
+              <dd>Trigger streams</dd>
+            </div>
+            <div>
+              <dt>0</dt>
+              <dd>Manual forms for paid claims</dd>
+            </div>
+            <div>
+              <dt>7 days</dt>
+              <dd>Weekly protection cycle</dd>
+            </div>
+          </dl>
+        </div>
+      </header>
+
+      <main class="content-grid" id="demo-panel">
+        <section class="panel controls-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Demo Controls</p>
+            <h2>Configure the worker profile</h2>
+            <p>
+              Adjust the zone, coverage, and disruption scenario to see how the
+              premium and payout simulation change.
+            </p>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              Worker Name
+              <input id="fullName" type="text" value="Aarav Singh" />
+            </label>
+            <label>
+              City
+              <select id="city">
+                <option value="Bengaluru">Bengaluru</option>
+                <option value="Mumbai" selected>Mumbai</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Hyderabad">Hyderabad</option>
+              </select>
+            </label>
+            <label>
+              Zone Type
+              <select id="zoneType">
+                <option value="safe">Safe Zone</option>
+                <option value="moderate">Moderate Zone</option>
+                <option value="high-risk" selected>High-Risk Zone</option>
+              </select>
+            </label>
+            <label>
+              Weekly Income
+              <input id="weeklyIncome" min="1000" step="500" type="number" value="9000" />
+            </label>
+            <label>
+              Coverage Amount
+              <input id="coverageAmount" min="3000" step="500" type="number" value="6500" />
+            </label>
+            <label>
+              Coverage Hours
+              <input id="coverageHours" min="20" max="168" step="4" type="number" value="56" />
+            </label>
+          </div>
+
+          <div class="scenario-picker">
+            <p class="scenario-title">Choose a disruption scenario</p>
+            <div class="scenario-buttons" id="scenarioButtons"></div>
+          </div>
+        </section>
+
+        <section class="panel premium-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Dynamic Premium</p>
+            <h2 id="premiumHeading">Income Shield Weekly</h2>
+            <p id="premiumNarrative"></p>
+          </div>
+
+          <div class="premium-hero">
+            <div>
+              <p class="mini-label">Recommended premium</p>
+              <h3 id="dynamicPremium">Rs 0 / week</h3>
+            </div>
+            <div class="risk-pill">
+              <span>Risk band</span>
+              <strong id="riskBand">-</strong>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span>Base Premium</span>
+              <strong id="basePremium">Rs 0</strong>
+            </article>
+            <article class="metric-card">
+              <span>Risk Score</span>
+              <strong id="riskScore">0</strong>
+            </article>
+            <article class="metric-card">
+              <span>Coverage</span>
+              <strong id="coverageSummary">Rs 0 / 0 hrs</strong>
+            </article>
+          </div>
+
+          <div class="factor-list" id="factorList"></div>
+        </section>
+
+        <section class="panel signals-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Automation & Protection</p>
+            <h2>Live disruption monitor</h2>
+            <p>Mock public feeds update this static branch to mirror the full app story.</p>
+          </div>
+
+          <div class="signal-grid" id="signalGrid"></div>
+        </section>
+
+        <section class="panel claims-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Claims Management</p>
+            <h2>Automated claim rail</h2>
+            <p id="claimIntro"></p>
+          </div>
+
+          <div class="claim-list" id="claimList"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

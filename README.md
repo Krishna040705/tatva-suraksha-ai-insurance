@@ -1,6 +1,11 @@
 # Suraksha
 
-Suraksha is a deployment-ready MERN-style parametric insurance platform for gig workers, upgraded for Team Tatva's Guidewire DEVTrails 2026 Week 6 theme: `Perfect for Your Worker`.
+## Branch Note
+
+- `main`: full React + Express Suraksha app
+- `html-demo`: standalone static demo that can be opened directly with `index.html`
+
+Suraksha is a MERN-style parametric insurance platform for gig workers built for Team Tatva's Guidewire DEVTrails 2026 Phase 2 theme: `Automation & Protection`.
 
 The platform now combines:
 

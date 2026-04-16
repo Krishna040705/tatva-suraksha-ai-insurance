@@ -132,9 +132,4 @@ Validated in this environment with:
 - `npm.cmd run check -w server`
 - `npm.cmd run build -w client`
 
-## Note On Final Submission
 
-The repo now contains the website, demo flow, pitch content, and export-ready artefacts. The only remaining manual steps are:
-
-- record the final 5-minute screen-capture video
-- upload that video to a public link

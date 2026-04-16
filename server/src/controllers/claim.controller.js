@@ -1,3 +1,5 @@
+import { buildPayoutSimulation } from "../services/payout.service.js";
+
 export async function listClaims(req, res, next) {
   try {
     const repositories = req.app.locals.repositories;
@@ -23,10 +25,14 @@ export async function releaseClaim(req, res, next) {
       });
     }
 
+    const policy = await repositories.policies.findById(claim.policyId);
+    const payout = buildPayoutSimulation(req.user, claim, policy);
     const updated = await repositories.claims.updateById(claim._id, {
       status: "paid",
       paidAt: new Date().toISOString(),
-      explanation: `${claim.explanation} Manual review cleared the hold.`,
+      payout,
+      payoutReference: payout.transferId,
+      explanation: `${claim.explanation} Manual review cleared the hold and settled the payout instantly.`,
     });
 
     return res.json({ claim: updated });

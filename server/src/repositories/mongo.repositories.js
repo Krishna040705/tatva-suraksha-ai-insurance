@@ -41,6 +41,8 @@ export function createMongoRepositories() {
     policies: {
       create: async (payload) => normalize(await PolicyModel.create(payload)),
       findById: async (id) => normalize(await PolicyModel.findById(id).lean()),
+      list: async () =>
+        normalizeList(await PolicyModel.find({}).sort({ updatedAt: -1 }).lean()),
       listByUserId: async (userId) =>
         normalizeList(
           await PolicyModel.find({ userId }).sort({ updatedAt: -1 }).lean(),
@@ -58,6 +60,8 @@ export function createMongoRepositories() {
     claims: {
       create: async (payload) => normalize(await ClaimModel.create(payload)),
       findById: async (id) => normalize(await ClaimModel.findById(id).lean()),
+      list: async () =>
+        normalizeList(await ClaimModel.find({}).sort({ updatedAt: -1 }).lean()),
       listByUserId: async (userId) =>
         normalizeList(
           await ClaimModel.find({ userId }).sort({ updatedAt: -1 }).lean(),
@@ -81,6 +85,13 @@ export function createMongoRepositories() {
     triggers: {
       createMany: async (payload) =>
         normalizeList(await TriggerEventModel.insertMany(payload)),
+      listRecent: async (limit = 10) =>
+        normalizeList(
+          await TriggerEventModel.find({})
+            .sort({ updatedAt: -1 })
+            .limit(limit)
+            .lean(),
+        ),
       listByUserId: async (userId, limit = 10) =>
         normalizeList(
           await TriggerEventModel.find({ userId })

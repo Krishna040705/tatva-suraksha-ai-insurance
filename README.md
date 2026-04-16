@@ -1,115 +1,135 @@
 # Suraksha
 
-Suraksha is a MERN-style parametric insurance platform for gig workers built for Team Tatva's Guidewire DEVTrails 2026 Phase 2 theme: `Automation & Protection`.
+Suraksha is a deployment-ready MERN-style parametric insurance platform for gig workers, upgraded for Team Tatva's Guidewire DEVTrails 2026 Week 6 theme: `Perfect for Your Worker`.
 
-It demonstrates:
+The platform now combines:
 
-- Worker registration
-- Insurance policy management
-- Dynamic weekly premium calculation
-- Automated claims management
-- Zero-touch payout simulation
-- Five disruption triggers: heavy rain, flooding, extreme heat, air pollution, and curfew
+- Worker onboarding and weekly policy issuance
+- Dynamic premium pricing from live disruption exposure
+- ML-assisted fraud detection for delivery-specific abuse patterns
+- Historical-weather validation for fake weather claims
+- Simulated instant payouts through UPI, Razorpay, and Stripe sandbox rails
+- Worker and insurer dashboards
+- Business viability and social-impact reporting for final judging
+
+## What Changed In This Upgrade
+
+- Reframed the product honestly from vague "AI-powered" marketing to ML-assisted fraud and predictive analytics
+- Added anomaly-based fraud scoring in `server/src/services/fraud.service.js`
+- Added payout gateway simulation in `server/src/services/payout.service.js`
+- Added worker forecasting and insurer analytics in `server/src/services/analytics.service.js`
+- Redesigned the frontend with a warmer, delivery-platform visual direction
+- Added a Week 6 submission package inside `docs/`
 
 ## Stack
 
 - Frontend: React + Vite
 - Backend: Node.js + Express
-- Persistence: Mongo-ready repository layer with a built-in demo persistence mode
+- Persistence: Mongo-ready repositories plus built-in demo persistence
 - Auth: JWT
-- Styling: custom responsive CSS
+- Deployment behavior: Express serves the built client when `client/dist` exists
 
 ## Project Structure
 
 ```text
 client/   React app
 server/   Express API
-docs/     Demo support notes
+docs/     Demo, pitch, and submission artefacts
 ```
 
-## How To Run
+## Local Run
 
-1. Install dependencies from the repo root:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Copy environment files if needed:
-
-```bash
-cp server/.env.example server/.env
-cp client/.env.example client/.env
-```
-
-3. Start both apps:
+2. Start both apps for development:
 
 ```bash
 npm run dev
 ```
 
-4. Open the frontend:
+3. Open the product:
 
 ```text
 http://localhost:5173
 ```
 
-5. The API runs on:
+4. API base:
 
 ```text
-http://localhost:4000
+http://localhost:4000/api
 ```
 
-## Demo Credentials
+## Production Build
 
-Use the built-in demo bootstrap button in the UI, or log in with:
+Build and verify the client bundle plus server syntax:
 
-- Email: `rider@suraksha.demo`
-- Password: `demo1234`
+```bash
+npm run build
+```
 
-## Submission Mapping
+Then start the API, which will also serve the built frontend from `client/dist`:
 
-### Registration Process
+```bash
+npm start
+```
 
-- `/api/auth/register`
-- Frontend onboarding form for worker profile creation
+## Demo Personas
 
-### Insurance Policy Management
+Use the UI buttons to load either seeded persona, or log in directly:
 
-- Quote, activate, pause, and reactivate weekly policies
-- Coverage amount and coverage hours controls
+- Worker
+  - Email: `rider@suraksha.demo`
+  - Password: `demo1234`
+- Admin
+  - Email: `ops@suraksha.demo`
+  - Password: `admin1234`
 
-### Dynamic Premium Calculation
+## Week 6 Deliverables Mapping
 
-- Hyper-local risk engine in `server/src/services/risk.service.js`
-- Safe-zone discount and disruption-based pricing adjustments
+- Advanced Fraud Detection
+  - GPS spoofing, suspicious clusters, device integrity drops, and fake weather claims checked with historical baselines
+- Instant Payout System
+  - Mock settlement rails for UPI, Razorpay test mode, and Stripe sandbox
+- Intelligent Dashboard
+  - Worker protection view plus insurer admin console with loss ratio and next-week forecast
+- Final Submission Package
+  - Demo script, pitch deck source, and submission guide staged in `docs/`
 
-### Claims Management
+## Docs
 
-- Automated trigger simulation in `server/src/services/claim-automation.service.js`
-- Flagged claim review and release endpoint
-
-## Demo Flow
-
-1. Load the demo account or register a new worker.
-2. Show the quoted weekly premium and factor explanations.
-3. Activate or adjust the policy.
-4. Run `Monsoon Surge`, `Heatwave Lock`, `Smog Spike`, or `Curfew Window`.
-5. Show automated trigger creation and zero-touch payouts in claims management.
+- `docs/DEMO_SCRIPT.md`
+- `docs/FINAL_PITCH_DECK.md`
+- `docs/FINAL_PITCH_DECK.html`
+- `docs/FINAL_PITCH_DECK.pdf`
+- `docs/FINAL_SUBMISSION_PACKAGE.md`
 
 ## Persistence Modes
 
-By default, the app runs in `demo` mode and stores data in:
+By default, the app runs in demo mode and stores records in:
 
 - `server/.demo-db.json`
 
-To use MongoDB instead, set:
+To use MongoDB instead:
 
 ```env
 PERSISTENCE_MODE=mongo
 MONGO_URI=mongodb://127.0.0.1:27017/suraksha
 ```
 
-## Important Note
+## Verification
 
-This environment could not complete `npm install` because the machine reported `ENOSPC` (no disk space left). The source code is ready, but you may need to free disk space before installing dependencies and running the full app locally.
+Validated in this environment with:
+
+- `npm.cmd run check -w server`
+- `npm.cmd run build -w client`
+
+## Note On Final Submission
+
+The repo now contains the website, demo flow, pitch content, and export-ready artefacts. The only remaining manual steps are:
+
+- record the final 5-minute screen-capture video
+- upload that video to a public link

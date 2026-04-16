@@ -1,27 +1,22 @@
-function currency(value) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(value || 0);
-}
+import { currency, shortDate, titleCase } from "../formatters.js";
 
 export default function PolicyStudio({
   policyForm,
   quote,
   loading,
+  gatewayOptions,
   onFieldChange,
   onRefreshQuote,
   onCreatePolicy,
 }) {
   return (
-    <section className="panel">
-      <div className="section-heading">
-        <span className="eyebrow">Insurance Policy Management</span>
-        <h2>Dynamic premium calculator</h2>
+    <section className="panel-surface">
+      <div className="panel-heading">
+        <span className="section-kicker">Income Shield Studio</span>
+        <h3>Weekly pricing built for gig-worker cash flow</h3>
         <p>
-          Weekly premiums move with disruption signals, zone history, and trust
-          behavior.
+          Adjust coverage, choose the payout rail, and see how the pricing
+          model reacts to live disruption risk in real time.
         </p>
       </div>
 
@@ -46,31 +41,48 @@ export default function PolicyStudio({
             value={policyForm.coverageHours}
           />
         </label>
+        <label className="full-span">
+          Instant payout rail
+          <select
+            name="payoutGatewayId"
+            onChange={onFieldChange}
+            value={policyForm.payoutGatewayId}
+          >
+            {gatewayOptions.map((gateway) => (
+              <option key={gateway.id} value={gateway.id}>
+                {gateway.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       {quote ? (
-        <div className="quote-panel">
-          <div className="quote-hero">
-            <div>
-              <span className="eyebrow">Recommended Premium</span>
-              <h3>{currency(quote.dynamicPremium)} / week</h3>
-            </div>
-            <div className="quote-badge">
-              <span>Risk score</span>
-              <strong>{quote.riskScore}</strong>
-            </div>
+        <div className="quote-showcase">
+          <div className="quote-main">
+            <span className="section-kicker">Recommended premium</span>
+            <h4>{currency(quote.dynamicPremium)} / week</h4>
+            <p>
+              Coverage remains active until {shortDate(quote.nextBillingDate)} and
+              is tuned to a {titleCase(quote.riskBand)} risk worker profile.
+            </p>
           </div>
 
-          <div className="metric-grid two-columns">
-            <article className="metric-card">
+          <div className="metric-grid three-up">
+            <article className="metric-tile">
               <span>Base premium</span>
               <strong>{currency(quote.basePremium)}</strong>
-              <small>Baseline based on coverage amount.</small>
+              <small>Coverage amount sets the baseline.</small>
             </article>
-            <article className="metric-card">
-              <span>Risk band</span>
-              <strong>{quote.riskBand}</strong>
-              <small>Updated by real-time operating conditions.</small>
+            <article className="metric-tile">
+              <span>Risk score</span>
+              <strong>{quote.riskScore}</strong>
+              <small>Live exposure signal for pricing.</small>
+            </article>
+            <article className="metric-tile">
+              <span>Payout readiness</span>
+              <strong>{titleCase(policyForm.payoutGatewayId)}</strong>
+              <small>Simulated instant settlement on approval.</small>
             </article>
           </div>
 
@@ -97,7 +109,7 @@ export default function PolicyStudio({
           type="button"
           onClick={onCreatePolicy}
         >
-          Activate Policy
+          Activate Weekly Cover
         </button>
       </div>
     </section>

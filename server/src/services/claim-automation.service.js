@@ -6,6 +6,7 @@ import {
 } from "../data/scenarios.js";
 import { evaluateFraud } from "./fraud.service.js";
 import { buildSignalSnapshot } from "./risk.service.js";
+import { buildPayoutSimulation } from "./payout.service.js";
 
 function roundMoney(value) {
   return Math.max(0, Math.round(value));
@@ -119,6 +120,7 @@ export async function runAutomationForUser(
   user,
   policies,
   scenarioId = "balanced-day",
+  simulationOptions = {},
 ) {
   const scenario = getScenarioById(scenarioId);
   const activePolicies = policies.filter((policy) => policy.status === "active");
@@ -139,6 +141,7 @@ export async function runAutomationForUser(
         policy._id,
         scenario.id,
         candidate.triggerType,
+        simulationOptions.fraudPresetId || "clean",
         new Date().toISOString().slice(0, 10),
       ].join(":");
 
@@ -152,10 +155,47 @@ export async function runAutomationForUser(
         continue;
       }
 
-      const fraudAssessment = evaluateFraud(user);
+      const fraudAssessment = evaluateFraud(user, snapshot, simulationOptions);
       const payout = claimPayout(user, policy, candidate.triggerType, severity);
       const claimStatus = fraudAssessment.status === "FLAGGED" ? "flagged" : "paid";
-      const payoutReference = `UPI-${randomUUID().slice(0, 8).toUpperCase()}`;
+      const payoutReference = `${(
+        simulationOptions.gatewayId ||
+        policy.payoutGatewayId ||
+        user.preferredPayoutRail ||
+        "upi"
+      ).toUpperCase()}-${randomUUID().slice(0, 8).toUpperCase()}`;
+      const claimDraft = {
+        userId: user._id,
+        policyId: policy._id,
+        eventKey,
+        triggerType: candidate.triggerType,
+        status: claimStatus,
+        lossHours: payout.lossHours,
+        payoutAmount: payout.payoutAmount,
+        payoutReference,
+        requestedGatewayId:
+          simulationOptions.gatewayId ||
+          policy.payoutGatewayId ||
+          user.preferredPayoutRail ||
+          "upi",
+        explanation: `${candidate.narrative} Claim automation evaluated telemetry, historical weather patterns, and payout readiness.`,
+        fraudAssessment: {
+          score: fraudAssessment.score,
+          status: fraudAssessment.status,
+          reasons: fraudAssessment.reasons,
+          confidence: fraudAssessment.confidence,
+          modelVersion: fraudAssessment.modelVersion,
+          features: fraudAssessment.features,
+          historicalContext: fraudAssessment.historicalContext,
+        },
+        triggerSnapshot: snapshot,
+        simulationProfile: simulationOptions.fraudPresetId || "clean",
+        paidAt: claimStatus === "paid" ? new Date().toISOString() : null,
+      };
+      const payoutSimulation =
+        claimStatus === "paid"
+          ? buildPayoutSimulation(user, claimDraft, policy)
+          : null;
 
       triggerEvents.push({
         userId: user._id,
@@ -170,25 +210,8 @@ export async function runAutomationForUser(
       });
 
       createdClaims.push({
-        userId: user._id,
-        policyId: policy._id,
-        eventKey,
-        triggerType: candidate.triggerType,
-        status: claimStatus,
-        lossHours: payout.lossHours,
-        payoutAmount: payout.payoutAmount,
-        payoutReference,
-        explanation: `${candidate.narrative} Zero-touch claim processing completed automatically.`,
-        fraudAssessment: {
-          score: fraudAssessment.score,
-          status: fraudAssessment.status,
-          reasons:
-            fraudAssessment.reasons.length > 0
-              ? fraudAssessment.reasons
-              : ["No fraud anomalies detected."],
-        },
-        triggerSnapshot: snapshot,
-        paidAt: claimStatus === "paid" ? new Date().toISOString() : null,
+        ...claimDraft,
+        payout: payoutSimulation,
       });
     }
   }
@@ -205,10 +228,15 @@ export async function runAutomationForUser(
   }
 
   if (persistedClaims.length) {
+    const lastClaim = persistedClaims[0];
     await repositories.users.updateById(user._id, {
-      trustScore: evaluateFraud(user).nextTrustScore,
+      trustScore:
+        lastClaim?.fraudAssessment?.status === "APPROVED"
+          ? clamp((user.trustScore || 80) + 2, 35, 99)
+          : clamp((user.trustScore || 80) - Math.max(4, Math.round((lastClaim?.fraudAssessment?.score || 0) / 12)), 35, 99),
       telemetryProfile: {
         ...(user.telemetryProfile || {}),
+        ...(simulationOptions.persistTelemetry ? simulationOptions.telemetryProfile : {}),
         claimFrequency:
           (user.telemetryProfile?.claimFrequency || 0) + persistedClaims.length,
       },

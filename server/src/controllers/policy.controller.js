@@ -47,6 +47,7 @@ export async function createPolicy(req, res, next) {
       userId: req.user._id,
       ...quote,
       status: "active",
+      payoutGatewayId: req.body.payoutGatewayId || req.user.preferredPayoutRail || "upi",
       triggerConfig: triggerConfig(),
     });
 
@@ -90,6 +91,8 @@ export async function updatePolicy(req, res, next) {
 
     const updated = await repositories.policies.updateById(policy._id, {
       status: req.body.status,
+      payoutGatewayId:
+        req.body.payoutGatewayId || policy.payoutGatewayId || req.user.preferredPayoutRail,
     });
 
     return res.json({ policy: updated });

@@ -21,9 +21,10 @@ async function request(path, options = {}, token) {
 }
 
 export const api = {
-  bootstrapDemo: () =>
+  bootstrapDemo: (persona = "worker") =>
     request("/demo/bootstrap", {
       method: "POST",
+      body: JSON.stringify({ persona }),
     }),
   register: (body) =>
     request("/auth/register", {

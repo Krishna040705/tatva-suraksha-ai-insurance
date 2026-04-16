@@ -1,58 +1,100 @@
-function severityClass(value, type) {
-  if (type === "aqi") {
-    return value >= 280 ? "critical" : value >= 200 ? "watch" : "safe";
+function statusClass(value, threshold, watchThreshold) {
+  if (value >= threshold) {
+    return "critical";
   }
 
-  if (type === "curfewLevel") {
-    return value >= 70 ? "critical" : value >= 45 ? "watch" : "safe";
+  if (value >= watchThreshold) {
+    return "watch";
   }
 
-  return value >= 72 ? "critical" : value >= 48 ? "watch" : "safe";
+  return "safe";
 }
 
 const signalMeta = [
-  { key: "rainfallMm", label: "Rainfall", unit: "mm", type: "weather" },
-  { key: "waterloggingIndex", label: "Flood Index", unit: "/100", type: "weather" },
-  { key: "heatIndex", label: "Heat Index", unit: "deg C", type: "weather" },
-  { key: "aqi", label: "AQI", unit: "", type: "aqi" },
-  { key: "curfewLevel", label: "Curfew Risk", unit: "/100", type: "curfewLevel" },
+  {
+    key: "rainfallMm",
+    label: "Rainfall",
+    unit: "mm",
+    thresholdKey: "heavy_rain",
+    watchFactor: 0.72,
+  },
+  {
+    key: "waterloggingIndex",
+    label: "Flood index",
+    unit: "/100",
+    thresholdKey: "flooding",
+    watchFactor: 0.72,
+  },
+  {
+    key: "heatIndex",
+    label: "Heat index",
+    unit: "deg C",
+    thresholdKey: "extreme_heat",
+    watchFactor: 0.9,
+  },
+  {
+    key: "aqi",
+    label: "AQI",
+    unit: "",
+    thresholdKey: "air_pollution",
+    watchFactor: 0.7,
+  },
+  {
+    key: "curfewLevel",
+    label: "Curfew risk",
+    unit: "/100",
+    thresholdKey: "curfew",
+    watchFactor: 0.7,
+  },
 ];
 
 export default function LiveSignals({ snapshot }) {
   return (
-    <section className="panel">
-      <div className="section-heading">
-        <span className="eyebrow">Automation & Protection</span>
-        <h2>Live disruption monitor</h2>
+    <section className="panel-surface">
+      <div className="panel-heading">
+        <span className="section-kicker">Live disruption monitor</span>
+        <h3>Parametric triggers watching the worker zone</h3>
         <p>
-          Five automated trigger streams watch for the conditions that cause loss
-          of income.
+          External feeds continuously monitor weather, civic restrictions, and
+          operating safety conditions before a worker ever has to file a form.
         </p>
       </div>
 
       <div className="signal-grid">
-        {signalMeta.map((signal) => (
-          <article
-            className={`signal-card ${severityClass(
-              snapshot[signal.key],
-              signal.type,
-            )}`}
-            key={signal.key}
-          >
-            <span>{signal.label}</span>
-            <strong>
-              {snapshot[signal.key]}
-              {signal.unit}
-            </strong>
-            <small>{snapshot.zoneLabel}</small>
-          </article>
-        ))}
+        {signalMeta.map((signal) => {
+          const threshold = snapshot.thresholds[signal.thresholdKey];
+          const value = snapshot[signal.key];
+
+          return (
+            <article
+              className={`signal-card ${statusClass(
+                value,
+                threshold,
+                threshold * signal.watchFactor,
+              )}`}
+              key={signal.key}
+            >
+              <div>
+                <span>{signal.label}</span>
+                <strong>
+                  {value}
+                  {signal.unit}
+                </strong>
+              </div>
+              <small>
+                Trigger at {threshold}
+                {signal.unit}
+              </small>
+            </article>
+          );
+        })}
       </div>
 
       <div className="provider-strip">
         {snapshot.providers.map((provider) => (
-          <span className="chip" key={provider.name}>
-            {provider.name}: {provider.mode}
+          <span className="provider-chip" key={provider.name}>
+            {provider.name}
+            <strong>{provider.mode}</strong>
           </span>
         ))}
       </div>

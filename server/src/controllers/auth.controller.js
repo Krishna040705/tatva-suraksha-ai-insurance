@@ -51,6 +51,7 @@ export async function register(req, res, next) {
     const user = await repositories.users.create({
       fullName: req.body.fullName,
       email: normalizedEmail,
+      role: "worker",
       phone: req.body.phone,
       passwordHash: await hashPassword(req.body.password),
       city: req.body.city,
@@ -59,13 +60,22 @@ export async function register(req, res, next) {
       platform: req.body.platform,
       weeklyIncome: Number(req.body.weeklyIncome),
       upiId: req.body.upiId,
+      preferredPayoutRail: req.body.preferredPayoutRail || "upi",
       trustScore: 82,
       telemetryProfile: {
         gpsLocation: "matched",
         networkLocation: "matched",
+        gpsDriftKm: 0.8,
+        routeDeviationScore: 6,
         movement: "active",
+        staticMinutes: 8,
+        routeSpeedKph: 28,
+        deviceIntegrityConfidence: 0.92,
         claimFrequency: 0,
         inSuspiciousCluster: false,
+        weatherReportConfidence: 0.9,
+        reportedRainMm: null,
+        riderDeclaredConditions: "aligned",
       },
     });
 

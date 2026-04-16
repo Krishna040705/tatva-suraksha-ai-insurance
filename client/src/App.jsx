@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { api } from "./api.js";
 import AuthPanel from "./components/AuthPanel.jsx";
+import AdminConsole from "./components/AdminConsole.jsx";
 import ClaimsBoard from "./components/ClaimsBoard.jsx";
 import LiveSignals from "./components/LiveSignals.jsx";
 import OverviewPanel from "./components/OverviewPanel.jsx";
 import PolicyStudio from "./components/PolicyStudio.jsx";
 import ScenarioLab from "./components/ScenarioLab.jsx";
+import SubmissionKit from "./components/SubmissionKit.jsx";
+import { currency, percent, titleCase } from "./formatters.js";
 
 const sessionTokenKey = "suraksha-token";
 
@@ -20,27 +23,32 @@ const defaultAuthForm = {
   platform: "Swiggy",
   weeklyIncome: 7000,
   upiId: "",
+  preferredPayoutRail: "upi",
 };
 
 const defaultPolicyForm = {
   coverageAmount: 5000,
   coverageHours: 48,
-  scenarioId: "balanced-day",
+  payoutGatewayId: "upi",
 };
 
-function currency(value) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(value || 0);
-}
+const defaultSimulationForm = {
+  fraudPresetId: "clean",
+  gatewayId: "upi",
+};
+
+const defaultGatewayOptions = [
+  { id: "upi", label: "UPI Simulator" },
+  { id: "razorpay", label: "Razorpay Test Mode" },
+  { id: "stripe", label: "Stripe Sandbox" },
+];
 
 export default function App() {
   const [token, setToken] = useState(() => localStorage.getItem(sessionTokenKey));
   const [authMode, setAuthMode] = useState("register");
   const [authForm, setAuthForm] = useState(defaultAuthForm);
   const [policyForm, setPolicyForm] = useState(defaultPolicyForm);
+  const [simulationForm, setSimulationForm] = useState(defaultSimulationForm);
   const [dashboard, setDashboard] = useState(null);
   const [quote, setQuote] = useState(null);
   const [scenarioResult, setScenarioResult] = useState(null);
@@ -59,12 +67,27 @@ export default function App() {
     try {
       const overview = await api.fetchOverview(activeToken);
       setDashboard(overview);
-      setQuote(overview.quotePreview);
-      setPolicyForm({
-        coverageAmount: overview.quotePreview.coverageAmount,
-        coverageHours: overview.quotePreview.coverageHours,
-        scenarioId: "balanced-day",
-      });
+
+      if (overview.view === "worker") {
+        setQuote(overview.quotePreview);
+        setPolicyForm({
+          coverageAmount: overview.quotePreview.coverageAmount,
+          coverageHours: overview.quotePreview.coverageHours,
+          payoutGatewayId:
+            overview.workerIntelligence.activePolicy?.payoutGatewayId ||
+            overview.user.preferredPayoutRail ||
+            "upi",
+        });
+        setSimulationForm((current) => ({
+          ...current,
+          gatewayId:
+            overview.workerIntelligence.activePolicy?.payoutGatewayId ||
+            overview.user.preferredPayoutRail ||
+            "upi",
+        }));
+      } else {
+        setQuote(null);
+      }
     } catch (error) {
       setMessage(error.message);
       clearSession();
@@ -88,7 +111,7 @@ export default function App() {
     const { name, value } = event.target;
     setAuthForm((current) => ({
       ...current,
-      [name]: value,
+      [name]: name === "weeklyIncome" ? Number(value) : value,
     }));
   }
 
@@ -96,7 +119,16 @@ export default function App() {
     const { name, value } = event.target;
     setPolicyForm((current) => ({
       ...current,
-      [name]: Number(value),
+      [name]:
+        name === "coverageAmount" || name === "coverageHours" ? Number(value) : value,
+    }));
+  }
+
+  function onSimulationFieldChange(event) {
+    const { name, value } = event.target;
+    setSimulationForm((current) => ({
+      ...current,
+      [name]: value,
     }));
   }
 
@@ -105,12 +137,9 @@ export default function App() {
     setMessage("");
 
     try {
-      const response = await api.register({
-        ...authForm,
-        weeklyIncome: Number(authForm.weeklyIncome),
-      });
+      const response = await api.register(authForm);
       persistSession(response.token);
-      setMessage("Worker registered successfully. Protection dashboard is ready.");
+      setMessage("Worker registered successfully. Suraksha coverage is ready.");
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -136,27 +165,47 @@ export default function App() {
     }
   }
 
-  async function handleDemo() {
+  async function handleDemo(persona = "worker") {
     setLoading(true);
     setMessage("");
 
     try {
-      const response = await api.bootstrapDemo();
+      const response = await api.bootstrapDemo(persona);
       persistSession(response.token);
       setDashboard(response.overview);
-      setQuote(response.overview.quotePreview);
-      setPolicyForm({
-        coverageAmount: response.overview.quotePreview.coverageAmount,
-        coverageHours: response.overview.quotePreview.coverageHours,
-        scenarioId: "balanced-day",
-      });
       setAuthMode("login");
       setAuthForm((current) => ({
         ...current,
         email: response.credentials.email,
         password: response.credentials.password,
       }));
-      setMessage("Demo account loaded. Use the scenario lab to trigger payouts.");
+
+      if (response.overview.view === "worker") {
+        setQuote(response.overview.quotePreview);
+        setPolicyForm({
+          coverageAmount: response.overview.quotePreview.coverageAmount,
+          coverageHours: response.overview.quotePreview.coverageHours,
+          payoutGatewayId:
+            response.overview.workerIntelligence.activePolicy?.payoutGatewayId ||
+            response.overview.user.preferredPayoutRail ||
+            "upi",
+        });
+        setSimulationForm((current) => ({
+          ...current,
+          gatewayId:
+            response.overview.workerIntelligence.activePolicy?.payoutGatewayId ||
+            response.overview.user.preferredPayoutRail ||
+            "upi",
+        }));
+      } else {
+        setQuote(null);
+      }
+
+      setMessage(
+        persona === "admin"
+          ? "Admin portfolio console loaded."
+          : "Worker demo loaded. Trigger a disruption to show automated claims and payout.",
+      );
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -171,7 +220,7 @@ export default function App() {
     try {
       const response = await api.fetchQuote(token, policyForm);
       setQuote(response);
-      setMessage("Premium recalculated with the latest disruption signals.");
+      setMessage("Premium recalculated using the live disruption snapshot.");
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -186,7 +235,7 @@ export default function App() {
     try {
       await api.createPolicy(token, policyForm);
       await refreshOverview(token);
-      setMessage("Policy activated and ready for automated claims.");
+      setMessage("Weekly protection activated and payout rail linked.");
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -199,13 +248,17 @@ export default function App() {
     setMessage("");
 
     try {
-      const response = await api.simulateTriggers(token, { scenarioId });
+      const response = await api.simulateTriggers(token, {
+        scenarioId,
+        fraudPresetId: simulationForm.fraudPresetId,
+        gatewayId: simulationForm.gatewayId,
+      });
       setScenarioResult(response);
       await refreshOverview(token);
       setMessage(
         response.claims.length
-          ? "Disruption processed and claims were created automatically."
-          : "Scenario ran successfully. No thresholds were crossed this time.",
+          ? "Scenario processed. Claim review and payout simulation completed."
+          : "Scenario ran successfully. Thresholds were not crossed this time.",
       );
     } catch (error) {
       setMessage(error.message);
@@ -219,7 +272,10 @@ export default function App() {
     setMessage("");
 
     try {
-      await api.updatePolicy(token, policy._id, { status });
+      await api.updatePolicy(token, policy._id, {
+        status,
+        payoutGatewayId: policyForm.payoutGatewayId,
+      });
       await refreshOverview(token);
       setMessage(`Policy status updated to ${status}.`);
     } catch (error) {
@@ -236,7 +292,7 @@ export default function App() {
     try {
       await api.releaseClaim(token, claimId);
       await refreshOverview(token);
-      setMessage("Flagged claim released after manual review.");
+      setMessage("Claim cleared and instant payout simulated.");
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -244,91 +300,149 @@ export default function App() {
     }
   }
 
+  const gatewayOptions = dashboard?.gatewayOptions || defaultGatewayOptions;
+
   return (
     <div className="app-shell">
-      <header className="hero-shell">
-        <div className="hero-copy">
-          <span className="hero-tag">Team Tatva | Guidewire DEVTrails 2026</span>
-          <h1>Suraksha protects gig workers before disruption becomes debt.</h1>
-          <p>
-            AI-powered parametric income protection for riders, drivers, and
-            field workers facing monsoon loss, heatwaves, pollution spikes, and
-            curfew shutdowns.
-          </p>
-          <div className="hero-stats">
-            <article>
-              <strong>5</strong>
-              <span>Automated trigger streams</span>
-            </article>
-            <article>
-              <strong>0</strong>
-              <span>Manual claim forms for approved payouts</span>
-            </article>
-            <article>
-              <strong>Rs 2</strong>
-              <span>Safe-zone weekly discount supported in pricing</span>
-            </article>
+      <header className="topbar">
+        <div className="brand-block">
+          <span className="brand-mark">
+            <img src="/logo/icon.png" alt="Suraksha Logo" width="64" height="64" />
+          </span>
+          <div>
+            <strong>Suraksha</strong>
+            <span>Parametric protection for delivery workers</span>
           </div>
         </div>
-
-        <div className="hero-card">
-          <span className="eyebrow">Phase 2 Submission Readiness</span>
-          <h2>What this build demonstrates</h2>
-          <div className="chip-row">
-            <span className="chip">Registration Process</span>
-            <span className="chip">Insurance Policy Management</span>
-            <span className="chip">Dynamic Premium Calculation</span>
-            <span className="chip">Claims Management</span>
-          </div>
-          <p>
-            {dashboard
-              ? `${dashboard.user.fullName} is currently covered for ${currency(
-                  dashboard.quotePreview.coverageAmount,
-                )} with a recommended premium of ${currency(
-                  dashboard.quotePreview.dynamicPremium,
-                )} per week.`
-              : "Start with a fresh worker registration or load the seeded demo account to jump straight into the automated claims journey."}
-          </p>
+        <div className="topbar-actions">
+          <button className="ghost-button" type="button" onClick={() => handleDemo("worker")}>
+            Worker Demo
+          </button>
+          <button className="ghost-button" type="button" onClick={() => handleDemo("admin")}>
+            Admin Demo
+          </button>
+          {dashboard ? (
+            <button className="secondary-button" type="button" onClick={clearSession}>
+              Logout
+            </button>
+          ) : null}
         </div>
       </header>
 
-      {!dashboard ? (
-        <AuthPanel
-          authForm={authForm}
-          authMode={authMode}
-          loading={loading}
-          message={message}
-          onDemo={handleDemo}
-          onFieldChange={onAuthFieldChange}
-          onLogin={handleLogin}
-          onModeChange={setAuthMode}
-          onRegister={handleRegister}
-        />
-      ) : (
-        <>
-          <div className="toolbar">
-            <div>
-              <span className="eyebrow">Signed in as</span>
-              <h2>{dashboard.user.fullName}</h2>
-            </div>
-            <div className="toolbar-actions">
-              <button className="secondary-button" type="button" onClick={handleDemo}>
-                Reload Demo Data
-              </button>
-              <button className="ghost-button" type="button" onClick={clearSession}>
-                Logout
-              </button>
-            </div>
+      <section className="hero-stage">
+        <div className="hero-copy">
+          <span className="section-kicker">Guidewire DEVTrails 2026</span>
+          <h1>Income protection designed around the rhythm of a delivery shift.</h1>
+          <p>
+            Suraksha blends parametric triggers, ML-driven fraud detection, and
+            simulated instant payouts so gig workers recover lost wages without
+            paperwork or waiting.
+          </p>
+          <div className="hero-strip">
+            <article>
+              <strong>Advanced fraud</strong>
+              <span>GPS spoofing and fake weather claims checked against telemetry and history.</span>
+            </article>
+            <article>
+              <strong>Instant payouts</strong>
+              <span>UPI, Razorpay, and Stripe sandbox flows simulate wage replacement.</span>
+            </article>
+            <article>
+              <strong>Dual dashboards</strong>
+              <span>Worker protection view plus insurer loss ratio and forecast console.</span>
+            </article>
           </div>
+        </div>
 
-          {message ? <p className="status-text">{message}</p> : null}
+        <div className="hero-panel panel-surface">
+          {dashboard ? (
+            <>
+              <span className="section-kicker">
+                {dashboard.view === "admin" ? "Insurer view" : "Worker view"}
+              </span>
+              <h3>{dashboard.user.fullName}</h3>
+              <p>
+                {dashboard.view === "admin"
+                  ? "Track live portfolio metrics, claim forecasts, and pricing viability."
+                  : `Coverage status: ${dashboard.metrics.protectionStatus}. Weekly premium is ${currency(dashboard.metrics.weeklyPremium || 0)}.`}
+              </p>
 
+              <div className="hero-metrics">
+                {dashboard.view === "admin" ? (
+                  <>
+                    <article>
+                      <strong>{dashboard.adminConsole.kpis.activePolicies}</strong>
+                      <span>Active policies</span>
+                    </article>
+                    <article>
+                      <strong>{percent(dashboard.adminConsole.kpis.predictiveLossRatio)}</strong>
+                      <span>Predictive loss ratio</span>
+                    </article>
+                    <article>
+                      <strong>{dashboard.adminConsole.kpis.nextWeekExpectedClaims}</strong>
+                      <span>Expected claims</span>
+                    </article>
+                  </>
+                ) : (
+                  <>
+                    <article>
+                      <strong>{currency(dashboard.metrics.earningsProtected)}</strong>
+                      <span>Protected earnings</span>
+                    </article>
+                    <article>
+                      <strong>{dashboard.metrics.activePolicies}</strong>
+                      <span>Active weekly cover</span>
+                    </article>
+                    <article>
+                      <strong>{percent(dashboard.workerIntelligence.forecast.forecastConfidence)}</strong>
+                      <span>Forecast confidence</span>
+                    </article>
+                  </>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="section-kicker">Submission-ready build</span>
+              <h3>What the judges can verify live</h3>
+              <ul className="hero-list">
+                <li>Dynamic weekly policy pricing linked to disruption exposure</li>
+                <li>ML anomaly scoring instead of purely rule-based fraud logic</li>
+                <li>Instant payout simulation after automated claim approval</li>
+                <li>Worker and insurer dashboards with business viability signals</li>
+              </ul>
+            </>
+          )}
+        </div>
+      </section>
+
+      {message ? <p className="status-text banner">{message}</p> : null}
+
+      {!dashboard ? (
+        <>
+          <AuthPanel
+            authForm={authForm}
+            authMode={authMode}
+            loading={loading}
+            message={message}
+            onDemoAdmin={() => handleDemo("admin")}
+            onDemoWorker={() => handleDemo("worker")}
+            onFieldChange={onAuthFieldChange}
+            onLogin={handleLogin}
+            onModeChange={setAuthMode}
+            onRegister={handleRegister}
+          />
+          <SubmissionKit />
+        </>
+      ) : dashboard.view === "worker" ? (
+        <>
           <div className="dashboard-grid">
             <OverviewPanel
               dashboard={dashboard}
               onPolicyStatusChange={updatePolicyStatus}
             />
             <PolicyStudio
+              gatewayOptions={gatewayOptions}
               loading={loading}
               onCreatePolicy={createPolicy}
               onFieldChange={onPolicyFieldChange}
@@ -340,16 +454,26 @@ export default function App() {
 
           <LiveSignals snapshot={dashboard.liveSnapshot} />
           <ScenarioLab
+            fraudPresets={dashboard.fraudPresets}
+            gatewayOptions={gatewayOptions}
             loading={loading}
+            onFieldChange={onSimulationFieldChange}
             onSimulate={simulateScenario}
             scenarioResult={scenarioResult}
             scenarios={dashboard.scenarios}
+            simulationForm={simulationForm}
           />
           <ClaimsBoard
             claims={dashboard.claims}
             loading={loading}
             onReleaseClaim={releaseClaim}
           />
+          <SubmissionKit />
+        </>
+      ) : (
+        <>
+          <AdminConsole dashboard={dashboard} />
+          <SubmissionKit />
         </>
       )}
     </div>

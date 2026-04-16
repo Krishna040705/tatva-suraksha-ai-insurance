@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suraksha Final Pitch Deck</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --brand: #ff6b1a;
+        --brand-deep: #d4540f;
+        --ink: #261e17;
+        --muted: #6d6458;
+        --panel: #fffaf4;
+        --line: rgba(38, 30, 23, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Aptos", "Trebuchet MS", "Segoe UI", sans-serif;
+        background: linear-gradient(180deg, #fff8f2, #fffefb);
+        color: var(--ink);
+      }
+
+      .deck {
+        width: min(1120px, calc(100% - 32px));
+        margin: 24px auto 48px;
+        display: grid;
+        gap: 20px;
+      }
+
+      .slide {
+        min-height: 620px;
+        padding: 40px;
+        border-radius: 28px;
+        background:
+          radial-gradient(circle at top right, rgba(255, 107, 26, 0.12), transparent 28%),
+          var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 0 28px 50px rgba(90, 38, 11, 0.08);
+        display: grid;
+        gap: 24px;
+        align-content: start;
+      }
+
+      .kicker {
+        color: var(--brand-deep);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        line-height: 1;
+      }
+
+      h1 {
+        font-size: 64px;
+        max-width: 10ch;
+      }
+
+      h2 {
+        font-size: 40px;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        font-size: 20px;
+        line-height: 1.6;
+      }
+
+      .accent {
+        color: var(--brand-deep);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 22px;
+        background: white;
+        border: 1px solid var(--line);
+      }
+
+      .card strong {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 20px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 22px;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .deck {
+          width: 100%;
+          margin: 0;
+          gap: 0;
+        }
+
+        .slide {
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          page-break-after: always;
+          min-height: 100vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="deck">
+      <section class="slide">
+        <span class="kicker">Team Tatva · Guidewire DEVTrails 2026</span>
+        <h1>Suraksha</h1>
+        <p class="accent">ML-assisted weekly income protection for gig workers</p>
+        <div class="grid">
+          <div class="card">
+            <strong>Worker-first product</strong>
+            <p>Designed around weekly cash flow, fast onboarding, and direct wage replacement.</p>
+          </div>
+          <div class="card">
+            <strong>Judging focus</strong>
+            <p>Fraud detection, instant payouts, intelligent dashboards, viability, and social impact.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Problem</span>
+        <h2>Disruption hurts gig workers immediately, but insurance still responds slowly.</h2>
+        <ul>
+          <li>Workers earn weekly and lose wages the same day rain, heat, or restrictions hit.</li>
+          <li>Traditional claim journeys are too document-heavy for small but urgent losses.</li>
+          <li>Insurers need fraud controls, which often creates friction for honest workers.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Persona</span>
+        <h2>Aarav Singh, delivery rider, Mumbai</h2>
+        <div class="grid">
+          <div class="card">
+            <strong>Reality</strong>
+            <p>Low savings buffer, highly weather-sensitive shifts, and no tolerance for payout delays.</p>
+          </div>
+          <div class="card">
+            <strong>Need</strong>
+            <p>Weekly coverage that replaces lost wages fast without creating more paperwork.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Solution</span>
+        <h2>Parametric protection with fraud intelligence and instant payout simulation.</h2>
+        <div class="grid">
+          <div class="card">
+            <strong>Worker side</strong>
+            <p>Register, get a weekly premium, activate policy, trigger claim, receive instant simulated payout.</p>
+          </div>
+          <div class="card">
+            <strong>Insurer side</strong>
+            <p>Watch loss ratios, claim forecast, city concentration, and worker trust signals in one dashboard.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">AI And Fraud Architecture</span>
+        <h2>Explainable triggers plus honest ML-assisted fraud review.</h2>
+        <div class="grid">
+          <div class="card">
+            <strong>Rule-based parametric core</strong>
+            <p>Rain, flooding, heat, AQI, and curfew thresholds trigger coverage eligibility.</p>
+          </div>
+          <div class="card">
+            <strong>ML-assisted fraud layer</strong>
+            <p>Centroid anomaly scoring checks GPS drift, device integrity, suspicious clusters, and fake weather declarations against historical bands.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Payout Rails</span>
+        <h2>Approved claims simulate instant wage replacement.</h2>
+        <ul>
+          <li>UPI Simulator</li>
+          <li>Razorpay Test Mode</li>
+          <li>Stripe Sandbox</li>
+        </ul>
+        <p>Each claim records payout rail, transfer ID, settlement time, and fraud evidence.</p>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Weekly Pricing</span>
+        <h2>Pricing aligned to gig-worker cash flow.</h2>
+        <ul>
+          <li>Weekly premiums feel small, understandable, and consistent with how workers earn.</li>
+          <li>Risk updates can happen quickly as zone exposure changes.</li>
+          <li>Transparent trigger thresholds build trust because the worker sees why they are paying.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Business Viability</span>
+        <h2>The platform tracks whether the portfolio can scale sustainably.</h2>
+        <div class="grid">
+          <div class="card">
+            <strong>Metrics tracked</strong>
+            <p>Weekly premium pool, settled payouts, live loss ratio, predictive loss ratio, and break-even worker count.</p>
+          </div>
+          <div class="card">
+            <strong>Commercial thesis</strong>
+            <p>Start in dense delivery corridors, pool low-risk and moderate-risk workers, and use digital payouts to reduce ops cost.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Social Impact</span>
+        <h2>Fast protection matters most for workers with the least buffer.</h2>
+        <ul>
+          <li>Prevents small disruptions from turning into debt cycles.</li>
+          <li>Reduces proof burden for honest workers.</li>
+          <li>Improves confidence with transparent approval and payout visibility.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <span class="kicker">Close</span>
+        <h2>Suraksha protects gig workers before disruption becomes debt.</h2>
+        <p>It is worker-friendly, insurer-visible, operationally trackable, and strong for a Week 6 live demo.</p>
+      </section>
+    </main>
+  </body>
+</html>

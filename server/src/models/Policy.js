@@ -13,6 +13,11 @@ const policySchema = new mongoose.Schema(
     coverageHours: { type: Number, required: true },
     basePremium: { type: Number, required: true },
     dynamicPremium: { type: Number, required: true },
+    payoutGatewayId: {
+      type: String,
+      enum: ["upi", "razorpay", "stripe"],
+      default: "upi",
+    },
     riskScore: { type: Number, required: true },
     riskBand: { type: String, required: true },
     factors: [{ type: String }],

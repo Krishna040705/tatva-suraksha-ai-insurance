@@ -20,6 +20,7 @@ export function createDemoRepositories() {
       create: async (payload) => db.create("policies", payload),
       findById: async (id) =>
         db.findOne("policies", (policy) => policy._id === id),
+      list: async () => newest(db.findMany("policies"), 200),
       listByUserId: async (userId) =>
         newest(db.findMany("policies", (policy) => policy.userId === userId), 20),
       listActive: async () =>
@@ -30,6 +31,7 @@ export function createDemoRepositories() {
     claims: {
       create: async (payload) => db.create("claims", payload),
       findById: async (id) => db.findOne("claims", (claim) => claim._id === id),
+      list: async () => newest(db.findMany("claims"), 200),
       listByUserId: async (userId) =>
         newest(db.findMany("claims", (claim) => claim.userId === userId), 20),
       listRecent: async (limit = 10) => newest(db.findMany("claims"), limit),
@@ -45,6 +47,7 @@ export function createDemoRepositories() {
     },
     triggers: {
       createMany: async (payload) => db.createMany("triggers", payload),
+      listRecent: async (limit = 10) => newest(db.findMany("triggers"), limit),
       listByUserId: async (userId, limit = 10) =>
         newest(
           db.findMany("triggers", (trigger) => trigger.userId === userId),

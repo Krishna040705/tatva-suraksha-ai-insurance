@@ -1,87 +1,106 @@
-function currency(value) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(value || 0);
-}
+import { currency, percent, shortDate, titleCase } from "../formatters.js";
 
 export default function OverviewPanel({ dashboard, onPolicyStatusChange }) {
-  const primaryPolicy =
-    dashboard.policies.find((policy) => policy.status === "active") ||
-    dashboard.policies[0];
+  const { user, metrics, workerIntelligence } = dashboard;
+  const activePolicy = workerIntelligence.activePolicy;
+  const forecast = workerIntelligence.forecast;
+  const latestAssessment = workerIntelligence.fraudCenter.latestAssessment;
 
   return (
-    <section className="panel">
-      <div className="section-heading">
-        <span className="eyebrow">Protection Overview</span>
-        <h2>{dashboard.user.fullName}</h2>
+    <section className="panel-surface overview-panel">
+      <div className="panel-heading">
+        <span className="section-kicker">Worker dashboard</span>
+        <h3>{user.fullName}</h3>
         <p>
-          {dashboard.user.occupation} on {dashboard.user.platform} in{" "}
-          {dashboard.user.city}. Trust score is {dashboard.user.trustScore}/100.
+          {user.occupation} on {user.platform} in {user.city}. Suraksha is currently
+          protecting weekly earnings with explainable fraud checks and instant
+          payout rails.
         </p>
       </div>
 
-      <div className="metric-grid">
-        <article className="metric-card">
-          <span>Weekly Income</span>
-          <strong>{currency(dashboard.user.weeklyIncome)}</strong>
-          <small>Income baseline used for payout simulation.</small>
+      <div className="metric-grid four-up">
+        <article className="metric-tile emphasis">
+          <span>Earnings protected</span>
+          <strong>{currency(metrics.earningsProtected)}</strong>
+          <small>Predicted recoverable income next week.</small>
         </article>
-        <article className="metric-card">
-          <span>Protection Status</span>
-          <strong>{dashboard.metrics.protectionStatus}</strong>
-          <small>{dashboard.metrics.activePolicies} active policy in force.</small>
+        <article className="metric-tile">
+          <span>Active weekly cover</span>
+          <strong>{activePolicy ? currency(activePolicy.coverageAmount) : "Not active"}</strong>
+          <small>{activePolicy ? `${activePolicy.coverageHours} hours insured` : "Activate a policy below"}</small>
         </article>
-        <article className="metric-card">
-          <span>Total Payouts</span>
-          <strong>{currency(dashboard.metrics.totalPayouts)}</strong>
-          <small>Zero-touch payouts already settled.</small>
+        <article className="metric-tile">
+          <span>Instant payout success</span>
+          <strong>{percent(workerIntelligence.fraudCenter.safeAutomationRate)}</strong>
+          <small>Claims that flowed through automation without a hold.</small>
+        </article>
+        <article className="metric-tile">
+          <span>Trust score</span>
+          <strong>{workerIntelligence.fraudCenter.trustScore}/100</strong>
+          <small>Updated by telemetry quality and claim behavior.</small>
         </article>
       </div>
 
-      {primaryPolicy ? (
-        <div className="subpanel">
-          <div className="subpanel-row">
+      <div className="split-row">
+        <div className="story-card warm">
+          <span className="section-kicker">Next week outlook</span>
+          <h4>{forecast.topRisk.label} is the highest predicted disruption.</h4>
+          <p>
+            Model confidence is {percent(forecast.forecastConfidence)} and the likely
+            protected income is {currency(forecast.expectedProtectedIncome)} if
+            disruptions hit.
+          </p>
+          <div className="tag-row">
+            <span className="info-pill">{forecast.topRisk.likelihoodLabel} likelihood</span>
+            <span className="info-pill">{Math.round(forecast.topRisk.probability * 100)}% trigger probability</span>
+          </div>
+        </div>
+
+        <div className="story-card">
+          <span className="section-kicker">Fraud watch</span>
+          <h4>{latestAssessment ? `${latestAssessment.modelVersion} is live` : "No anomalies yet"}</h4>
+          <p>
+            {latestAssessment
+              ? latestAssessment.reasons[0]
+              : "The ML anomaly engine has not flagged this worker in the current protection window."}
+          </p>
+          {latestAssessment ? (
+            <div className="tag-row">
+              <span className="info-pill">Score {latestAssessment.score}</span>
+              <span className="info-pill">{titleCase(latestAssessment.status)}</span>
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      {activePolicy ? (
+        <div className="detail-panel">
+          <div className="detail-heading">
             <div>
-              <h3>{primaryPolicy.planName}</h3>
-              <p>
-                Premium {currency(primaryPolicy.dynamicPremium)} / week with{" "}
-                {currency(primaryPolicy.coverageAmount)} coverage.
-              </p>
+              <span className="section-kicker">Policy in force</span>
+              <h4>{activePolicy.planName}</h4>
             </div>
             <button
               className="secondary-button"
               type="button"
               onClick={() =>
                 onPolicyStatusChange(
-                  primaryPolicy,
-                  primaryPolicy.status === "active" ? "paused" : "active",
+                  activePolicy,
+                  activePolicy.status === "active" ? "paused" : "active",
                 )
               }
             >
-              {primaryPolicy.status === "active" ? "Pause Policy" : "Reactivate"}
+              {activePolicy.status === "active" ? "Pause Policy" : "Reactivate Policy"}
             </button>
           </div>
-          <div className="chip-row">
-            <span className="chip">Risk band: {primaryPolicy.riskBand}</span>
-            <span className="chip">
-              Coverage hours: {primaryPolicy.coverageHours} / week
-            </span>
-            <span className="chip">
-              Status: {primaryPolicy.status}
-            </span>
-            <span className="chip">
-              Renewal: {new Date(primaryPolicy.nextBillingDate).toLocaleDateString()}
-            </span>
+          <div className="tag-row">
+            <span className="info-pill">Risk band: {titleCase(activePolicy.riskBand)}</span>
+            <span className="info-pill">Premium: {currency(activePolicy.dynamicPremium)}/week</span>
+            <span className="info-pill">Payout rail: {titleCase(activePolicy.payoutGatewayId)}</span>
+            <span className="info-pill">Renewal: {shortDate(activePolicy.nextBillingDate)}</span>
           </div>
         </div>
-      ) : (
-        <div className="subpanel empty-state">
-          <h3>No active policy</h3>
-          <p>Create a weekly plan below to activate automated income protection.</p>
-        </div>
-      )}
+      ) : null}
     </section>
   );
 }

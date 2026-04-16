@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import cors from "cors";
 import express from "express";
 import authRoutes from "./routes/auth.routes.js";
@@ -11,6 +14,10 @@ import {
   errorHandler,
   notFoundHandler,
 } from "./middleware/error.middleware.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientDistPath = path.resolve(__dirname, "../../client/dist");
 
 export function createApp(repositories, mode) {
   const app = express();
@@ -40,6 +47,13 @@ export function createApp(repositories, mode) {
   app.use("/api/demo", demoRoutes);
   app.use("/api/policies", policyRoutes);
   app.use("/api/triggers", triggerRoutes);
+
+  if (fs.existsSync(clientDistPath)) {
+    app.use(express.static(clientDistPath));
+    app.get(/^(?!\/api).*/, (req, res) => {
+      res.sendFile(path.join(clientDistPath, "index.html"));
+    });
+  }
 
   app.use(notFoundHandler);
   app.use(errorHandler);

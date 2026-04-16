@@ -1,9 +1,15 @@
 import { disruptionScenarios } from "../data/scenarios.js";
+import { fraudPresets } from "../data/fraud-presets.js";
 import { runAutomationForUser } from "../services/claim-automation.service.js";
 import { buildSignalSnapshot } from "../services/risk.service.js";
+import { listGatewayOptions } from "../services/payout.service.js";
 
 export async function getScenarios(req, res) {
-  return res.json({ scenarios: disruptionScenarios });
+  return res.json({
+    scenarios: disruptionScenarios,
+    fraudPresets,
+    gateways: listGatewayOptions(),
+  });
 }
 
 export async function getSnapshot(req, res, next) {
@@ -26,6 +32,10 @@ export async function simulateTriggers(req, res, next) {
       req.user,
       policies,
       req.body.scenarioId,
+      {
+        fraudPresetId: req.body.fraudPresetId,
+        gatewayId: req.body.gatewayId,
+      },
     );
 
     return res.json(result);

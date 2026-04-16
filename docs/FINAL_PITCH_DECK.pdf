@@ -1,0 +1,311 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R 25 0 R 27 0 R ] /Count 12 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 244 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Suraksha
+) Tj
+/F2 15 Tf
+0 -30 Td
+(ML-assisted weekly income protection for gig workers) Tj
+0 -30 Td
+(Team Tatva | Guidewire DEVTrails 2026 Week 6) Tj
+0 -30 Td
+(Worker-first protection for weekly income disruption) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 252 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+The Worker Persona
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Aarav Singh | Delivery rider | Mumbai) Tj
+0 -30 Td
+(Earns weekly and loses income the same day disruption hits) Tj
+0 -30 Td
+(Needs instant wage replacement instead of paperwork) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 269 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+The Problem
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Rain, flooding, heat, pollution, and curfew reduce shift income fast) Tj
+0 -30 Td
+(Traditional insurance is too slow for small but urgent losses) Tj
+0 -30 Td
+(Insurers still need strong fraud controls) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 253 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Our Solution
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Weekly parametric income protection for gig workers) Tj
+0 -30 Td
+(Automated triggers replace manual claim filing) Tj
+0 -30 Td
+(Approved claims settle through mock instant payout rails) Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 14 0 R >>
+endobj
+14 0 obj
+<< /Length 289 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Fraud Architecture
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Rule-based triggers plus ML-assisted anomaly scoring) Tj
+0 -30 Td
+(GPS drift, device integrity, suspicious clusters, and fake weather gaps) Tj
+0 -30 Td
+(Historical weather bands help detect fake storm declarations) Tj
+ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 16 0 R >>
+endobj
+16 0 obj
+<< /Length 195 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Instant Payout System
+) Tj
+/F2 15 Tf
+0 -30 Td
+(UPI Simulator) Tj
+0 -30 Td
+(Razorpay Test Mode) Tj
+0 -30 Td
+(Stripe Sandbox with transfer ID and settlement timeline) Tj
+ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 18 0 R >>
+endobj
+18 0 obj
+<< /Length 268 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Worker Dashboard
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Shows earnings protected, active weekly cover, and payout readiness) Tj
+0 -30 Td
+(Forecast predicts next-week disruption pressure) Tj
+0 -30 Td
+(Claim cards include payout rail and fraud evidence) Tj
+ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 20 0 R >>
+endobj
+20 0 obj
+<< /Length 265 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Insurer Dashboard
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Shows weekly premium pool, loss ratio, predictive loss ratio) Tj
+0 -30 Td
+(Highlights likely triggers and city risk spread) Tj
+0 -30 Td
+(Tracks worker-level premium, payouts, and trust score) Tj
+ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 22 0 R >>
+endobj
+22 0 obj
+<< /Length 263 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Business Viability
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Weekly pricing matches the worker income cycle) Tj
+0 -30 Td
+(Portfolio pooling and digital payouts improve economics) Tj
+0 -30 Td
+(Break-even worker count and premium adequacy are visible) Tj
+ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 24 0 R >>
+endobj
+24 0 obj
+<< /Length 250 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Social Impact
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Protects low-balance workers from immediate debt pressure) Tj
+0 -30 Td
+(Reduces paperwork for honest claims) Tj
+0 -30 Td
+(Improves trust with transparent triggers and fast payouts) Tj
+ET
+endstream
+endobj
+25 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 26 0 R >>
+endobj
+26 0 obj
+<< /Length 296 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+What Makes Suraksha Different
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Built for workers, not retrofitted from old insurance journeys) Tj
+0 -30 Td
+(Combines parametric automation with fraud intelligence) Tj
+0 -30 Td
+(Supports real insurer operations through live portfolio metrics) Tj
+ET
+endstream
+endobj
+27 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 28 0 R >>
+endobj
+28 0 obj
+<< /Length 204 >>
+stream
+BT
+/F1 28 Tf
+72 720 Td
+(
+Closing
+) Tj
+/F2 15 Tf
+0 -30 Td
+(Suraksha protects gig workers before disruption becomes debt) Tj
+0 -30 Td
+(Fast for workers, visible for insurers, ready for Week 6 judging) Tj
+ET
+endstream
+endobj
+xref
+0 29
+0000000000 65535 f 
+0000000010 00000 n 
+0000000062 00000 n 
+0000000200 00000 n 
+0000000278 00000 n 
+0000000351 00000 n 
+0000000490 00000 n 
+0000000788 00000 n 
+0000000927 00000 n 
+0000001233 00000 n 
+0000001373 00000 n 
+0000001697 00000 n 
+0000001838 00000 n 
+0000002146 00000 n 
+0000002287 00000 n 
+0000002631 00000 n 
+0000002772 00000 n 
+0000003022 00000 n 
+0000003163 00000 n 
+0000003486 00000 n 
+0000003627 00000 n 
+0000003947 00000 n 
+0000004088 00000 n 
+0000004406 00000 n 
+0000004547 00000 n 
+0000004852 00000 n 
+0000004993 00000 n 
+0000005344 00000 n 
+0000005485 00000 n 
+trailer
+<< /Size 29 /Root 1 0 R >>
+startxref
+5744
+%%EOF
